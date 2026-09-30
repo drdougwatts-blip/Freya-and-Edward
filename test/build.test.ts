@@ -2,6 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, rmSync } from 'node:fs';
+import * as srcEngine from '../src/rota/engine.ts';
+import * as srcLoad from '../src/rota/load.ts';
 
 const root = new URL('..', import.meta.url).pathname;
 const out = root + 'dist-test/';
@@ -25,8 +27,12 @@ describe('Static site build', () => {
       const time = await import(out + 'js/time.js');
       const data = await import(out + 'js/data.js');
       const cfg = load.loadRota(data.rota);
-      const r = engine.responsibleAt(time.londonToInstant('2026-10-24', '12:00'), cfg, 'viewer');
-      assert.equal(r.parent, 'B');
+      const srcCfg = srcLoad.loadRota(data.rota);
+      for (const [d, t] of [['2026-10-24', '12:00'], ['2027-03-28', '01:30'], ['2027-07-01', '08:45']]) {
+        const built = engine.responsibleAt(time.londonToInstant(d, t), cfg, 'viewer');
+        const src = srcEngine.responsibleAt(time.londonToInstant(d, t), srcCfg, 'viewer');
+        assert.deepEqual([built.parent, built.until], [src.parent, src.until], `${d} ${t}`);
+      }
       assert.equal(data.people.parents.A.name, 'Parent A');
       assert.doesNotMatch(readFileSync(out + 'js/app.js', 'utf8'), /\.ts'/);
     } finally {
