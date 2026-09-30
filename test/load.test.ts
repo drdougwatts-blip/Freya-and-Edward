@@ -16,6 +16,16 @@ describe('rota.json loading', () => {
     loadRota(JSON.parse(readFileSync(new URL('../rota.json', import.meta.url), 'utf8')));
   });
 
+  it('the committed rota.json hands over to A at 08:45 on Wed 30 Sep 2026, then B from Fri 2 Oct', () => {
+    const cfg = loadRota(JSON.parse(readFileSync(new URL('../rota.json', import.meta.url), 'utf8')));
+    const r = responsibleAt(londonToInstant('2026-09-30', '08:45'), cfg, 'viewer');
+    assert.equal(r.parent, 'A');
+    assert.equal(formatLondon(r.since), '2026-09-30 08:45');
+    assert.equal(formatLondon(r.until), '2026-10-02 08:45');
+    assert.equal(r.next, 'B');
+    assert.equal(responsibleAt(londonToInstant('2026-09-30', '08:44'), cfg, 'viewer').parent, 'B');
+  });
+
   it('the committed people.example.json is valid and contains placeholders only', () => {
     const p = validatePeople(JSON.parse(readFileSync(new URL('../people.example.json', import.meta.url), 'utf8')));
     assert.match(p.parents.A.phone, /^07700 900/); // Ofcom range reserved for fiction

@@ -3,17 +3,12 @@
   "patterns": [
     {
       "id": "2-2-3",
-      "from": "2026-01-05",
-      "anchor": "2026-01-05",
-      "nights": "AABBAAA BBAABBB",
+      "from": "2026-09-28",
+      "anchor": "2026-09-28",
+      "nights": "BBAABBB AABBAAA",
       "nonSchoolHandover": "17:00"
     }
   ],
-  "closures": [
-    { "from": "2026-10-26", "to": "2026-10-30", "label": "October half term (placeholder)" },
-    { "from": "2026-12-21", "to": "2027-01-01", "label": "Christmas holidays (placeholder)" }
-  ],
-  "overrides": [
-    { "from": "2026-10-22 15:30", "to": "2026-10-27 17:00", "parent": "B", "note": "Example: half-term holiday (placeholder)" }
-  ]
+  "closures": [],
+  "overrides": []
 }
