@@ -1,5 +1,4 @@
 node_modules/
-.wrangler/
-.dev.vars
-*.local.json
-backups/
+dist/
+dist-test/
+people.local.json
