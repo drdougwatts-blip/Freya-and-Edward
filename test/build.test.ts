@@ -15,11 +15,9 @@ describe('Static site build', () => {
       env: { ...process.env, OUT_DIR: 'dist-test', NODE_NO_WARNINGS: '1' },
     });
     try {
-      const headers = readFileSync(out + '_headers', 'utf8');
-      assert.match(headers, /X-Robots-Tag: noindex/);
-      assert.match(headers, /Content-Security-Policy: default-src 'none'; script-src 'self'/);
-      assert.match(readFileSync(out + 'robots.txt', 'utf8'), /Disallow: \//);
-      assert.match(readFileSync(out + 'index.html', 'utf8'), /<meta name="robots" content="noindex/);
+      const html = readFileSync(out + 'index.html', 'utf8');
+      assert.match(html, /<meta name="robots" content="noindex/);
+      assert.match(html, /Content-Security-Policy" content="default-src 'none'; script-src 'self'/);
 
       // The built browser code must load and give the same answers as the source.
       const engine = await import(out + 'js/engine.js');

@@ -55,6 +55,6 @@ describe('rota.json loading', () => {
   });
 
   it('needs a name for each parent', () => {
-    assert.throws(() => loadRota({ ...base, names: { A: 'Doug', B: '' } }), /name for B/);
+    assert.throws(() => loadRota({ ...base, names: { A: 'Parent A', B: '' } }), /name for B/);
   });
 });

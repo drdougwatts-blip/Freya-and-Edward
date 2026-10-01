@@ -36,6 +36,6 @@ for (const src of sources) {
 
 writeFileSync(out + 'js/data.js', `export const rota = ${JSON.stringify(rota)};\n`);
 
-for (const f of ['index.html', 'styles.css', '_headers', 'robots.txt']) copyFileSync(root + 'src/app/' + f, out + f);
+for (const f of ['index.html', 'styles.css']) copyFileSync(root + 'src/app/' + f, out + f);
 
 console.log(`Built ${out}`);
