@@ -366,3 +366,22 @@ export function monthView(year: number, month: number, cfg: RotaConfig, audience
   }
   return days;
 }
+
+export interface DayTimeline {
+  date: string;
+  /** Who has the children at the start of the day (00:00). */
+  startParent: Parent | null;
+  /** Changes of parent during the day, in order. */
+  changes: { time: string; at: number; to: Parent | null }[];
+}
+
+/** Who has the children across one London date: who at midnight, then each change. */
+export function dayTimeline(date: string, cfg: RotaConfig, audience: Audience): DayTimeline {
+  const from = londonToInstant(date, '00:00');
+  const to = londonToInstant(addDays(date, 1), '00:00');
+  return {
+    date,
+    startParent: responsibleAt(from, cfg, audience).parent,
+    changes: handovers(from, to, cfg, audience).map((h) => ({ time: londonTime(h.at), at: h.at, to: h.to })),
+  };
+}

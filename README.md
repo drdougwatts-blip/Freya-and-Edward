@@ -1,6 +1,8 @@
 # Rota
 
-A web page that shows one word: the name of the parent who has the children right now. It updates itself every 30 seconds and is correct across the clock changes.
+A web page that shows the name of the parent who has the children right now, in large text. It updates itself every 30 seconds and is correct across the clock changes.
+
+Underneath is a date box. Pick any date and it shows who has the children that day, and the handover time if there is one, e.g. "Fri 9 Oct: Anna until 08:45, then Doug".
 
 There is no database, no server code and no sign-in. The page works the answer out in the browser from `rota.json`.
 
