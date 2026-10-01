@@ -41,7 +41,11 @@ function renderDate(): void {
 }
 
 input.value = londonDate(Date.now());
+// Phones differ in which event they send when the calendar closes, so listen
+// for both, and give a button for anyone who expects to press one.
 input.addEventListener('input', renderDate);
+input.addEventListener('change', renderDate);
+document.getElementById('show')!.addEventListener('click', renderDate);
 renderDate();
 
 renderNow();

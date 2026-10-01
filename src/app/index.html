@@ -12,8 +12,15 @@
 </head>
 <body>
   <main>
+    <p class="lead">Children are currently with:</p>
     <p id="who"></p>
-    <label class="pick">Check a date <input type="date" id="date"></label>
+    <div class="pick">
+      <label for="date">Check a date</label>
+      <div class="row">
+        <input type="date" id="date">
+        <button type="button" id="show">Show</button>
+      </div>
+    </div>
     <p id="answer" aria-live="polite"></p>
   </main>
   <noscript><p>This page needs JavaScript switched on.</p></noscript>
