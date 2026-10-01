@@ -83,7 +83,7 @@ Edit `rota.json` with your real anchor date, the 14 nights, the school start tim
    - Build command: `npm run build`
    - Build output directory: `dist`
 3. Under **Environment variables (Production)**, add:
-   - `ROTA_PEOPLE`: the people data as a single JSON value, in the same format as `people.example.json`, with your real details. Tick **Encrypt**.
+   - `ROTA_PEOPLE`: the people data as a single JSON value, in the same format as `people.example.json`, with your real details. Tick **Encrypt**. A parent's `phone` and `email` are optional. Leave them out and the page says "Use the number on school records" instead.
 4. Deploy. Leave `ROTA_PEOPLE` out of the **Preview** environment on purpose. Test branches will then fail to build and never publish real details.
 5. Optionally add your domain under the project's **Custom domains**.
 

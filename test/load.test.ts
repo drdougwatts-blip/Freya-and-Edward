@@ -59,11 +59,16 @@ describe('rota.json loading', () => {
     assert.throws(() => loadRota({ ...base, schoolStart: '8.45' }), /Invalid time/);
   });
 
+  it('allows a parent with no phone or email', () => {
+    const p = validatePeople({ children: ['X'], school: 'S', parents: { A: { name: 'a', phone: '1', email: 'e' }, B: { name: 'b' } } });
+    assert.equal(p.parents.B.phone, undefined);
+  });
+
   it('rejects incomplete people data', () => {
     assert.throws(() => validatePeople({ children: [], school: 'x', parents: {} }), /children/);
     assert.throws(
       () => validatePeople({ children: ['X'], school: 'S', parents: { A: { name: 'a', phone: '1', email: 'e' }, B: { name: 'b', phone: '', email: 'e' } } }),
-      /parent B "phone"/,
+      /parent B "phone" should be filled in or left out/,
     );
   });
 });

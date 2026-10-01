@@ -23,8 +23,9 @@ export interface RotaFile {
 
 export interface Person {
   name: string;
-  phone: string;
-  email: string;
+  /** Optional: leave out to keep a parent's number off the page. */
+  phone?: string;
+  email?: string;
 }
 
 /** Private data, never committed: comes from the ROTA_PEOPLE setting or people.local.json. */
@@ -96,8 +97,11 @@ export function validatePeople(p: unknown): People {
   for (const k of ['A', 'B'] as const) {
     const par = x.parents?.[k];
     if (!par) fail(`parent ${k} is missing`);
-    for (const f of ['name', 'phone', 'email'] as const) {
-      if (typeof par[f] !== 'string' || par[f].trim() === '') fail(`parent ${k} "${f}" is missing`);
+    if (typeof par.name !== 'string' || par.name.trim() === '') fail(`parent ${k} "name" is missing`);
+    for (const f of ['phone', 'email'] as const) {
+      if (par[f] !== undefined && (typeof par[f] !== 'string' || par[f].trim() === '')) {
+        fail(`parent ${k} "${f}" should be filled in or left out completely`);
+      }
     }
   }
   return x;

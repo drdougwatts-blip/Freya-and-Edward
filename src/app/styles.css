@@ -69,6 +69,7 @@ nav a[aria-current="page"] { background: var(--ink); color: #fff; border-color: 
   color: #fff;
   text-decoration: none;
 }
+.no-phone { margin: 0; font-size: 1.1rem; color: var(--muted); }
 .email { display: block; margin: 10px 0 0; color: var(--ink); word-break: break-all; }
 .until { font-size: 1.15rem; margin: 14px 0 0; }
 .note { margin: 10px 0 0; padding: 8px 10px; background: #fff7d6; border-radius: 8px; }
