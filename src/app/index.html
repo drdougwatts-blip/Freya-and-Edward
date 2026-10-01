@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Who to contact</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header>
+    <h1 id="title">Who to contact</h1>
+    <p id="school"></p>
+  </header>
+
+  <nav aria-label="Views">
+    <a href="#now" data-view="now">Now</a>
+    <a href="#lookup" data-view="lookup">Look up</a>
+    <a href="#month" data-view="month">Month</a>
+  </nav>
+
+  <main>
+    <section id="view-now" aria-live="polite"></section>
+
+    <section id="view-lookup" hidden>
+      <form id="lookup-form" class="lookup-form">
+        <label>Date <input type="date" id="lookup-date" required></label>
+        <label>Time <input type="time" id="lookup-time" required></label>
+      </form>
+      <div id="lookup-result"></div>
+    </section>
+
+    <section id="view-month" hidden>
+      <div class="month-bar">
+        <button type="button" id="month-prev" aria-label="Previous month">&lsaquo;</button>
+        <h2 id="month-title"></h2>
+        <button type="button" id="month-next" aria-label="Next month">&rsaquo;</button>
+        <button type="button" id="month-print" class="print-btn">Print</button>
+      </div>
+      <p id="month-legend" class="legend"></p>
+      <table id="month-grid" class="cal"></table>
+      <p class="print-only" id="month-footer"></p>
+    </section>
+  </main>
+
+  <noscript><p class="card">This page needs JavaScript switched on.</p></noscript>
+</body>
+</html>

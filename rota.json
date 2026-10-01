@@ -1,0 +1,14 @@
+{
+  "schoolStart": "08:45",
+  "patterns": [
+    {
+      "id": "2-2-3",
+      "from": "2026-09-28",
+      "anchor": "2026-09-28",
+      "nights": "BBAABBB AABBAAA",
+      "nonSchoolHandover": "17:00"
+    }
+  ],
+  "closures": [],
+  "overrides": []
+}
