@@ -1,5 +1,5 @@
 // Serves dist/ at http://localhost:8788 to preview the site before deploying.
-// For local checking only: the real site sits behind Cloudflare Access.
+// For local checking only.
 
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';

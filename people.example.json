@@ -1,8 +1,0 @@
-{
-  "children": ["Child One", "Child Two"],
-  "school": "Example Primary School",
-  "parents": {
-    "A": { "name": "Parent A", "phone": "07700 900001", "email": "parent.a@example.com" },
-    "B": { "name": "Parent B", "phone": "07700 900002", "email": "parent.b@example.com" }
-  }
-}

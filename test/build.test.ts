@@ -9,8 +9,8 @@ const root = new URL('..', import.meta.url).pathname;
 const out = root + 'dist-test/';
 
 describe('Static site build', () => {
-  it('builds with placeholder data and produces a working, locked-down site', async () => {
-    execFileSync(process.execPath, ['scripts/build.ts', '--example'], {
+  it('builds and produces a working, locked-down site', async () => {
+    execFileSync(process.execPath, ['scripts/build.ts'], {
       cwd: root,
       env: { ...process.env, OUT_DIR: 'dist-test', NODE_NO_WARNINGS: '1' },
     });
@@ -33,7 +33,6 @@ describe('Static site build', () => {
         const src = srcEngine.responsibleAt(time.londonToInstant(d, t), srcCfg, 'viewer');
         assert.deepEqual([built.parent, built.until], [src.parent, src.until], `${d} ${t}`);
       }
-      assert.equal(data.people.parents.A.name, 'Parent A');
       assert.doesNotMatch(readFileSync(out + 'js/app.js', 'utf8'), /\.ts'/);
     } finally {
       rmSync(out, { recursive: true, force: true });
