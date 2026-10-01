@@ -1,11 +1,13 @@
-// Turns the human-edited rota.json and the private people data into what the
-// engine needs, with clear error messages for typos.
+// Turns the human-edited rota.json into what the engine needs, with clear
+// error messages for typos.
 
 import { validateConfig, type Closure, type Override, type Parent, type RotaConfig } from './engine.ts';
 import { londonToInstant } from './time.ts';
 
 /** The shape of rota.json. Dates are 'YYYY-MM-DD', times 'HH:MM', London time. */
 export interface RotaFile {
+  /** The name shown on the page for each parent. */
+  names: Record<Parent, string>;
   schoolStart: string;
   schoolWeekdays?: number[];
   patterns: {
@@ -21,20 +23,6 @@ export interface RotaFile {
   overrides?: { from: string; to: string; parent: Parent; note?: string }[];
 }
 
-export interface Person {
-  name: string;
-  /** Optional: leave out to keep a parent's number off the page. */
-  phone?: string;
-  email?: string;
-}
-
-/** Private data, never committed: comes from the ROTA_PEOPLE setting or people.local.json. */
-export interface People {
-  children: string[];
-  school: string;
-  parents: Record<Parent, Person>;
-}
-
 function localDateTime(value: string, where: string): number {
   const m = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})$/.exec(String(value).trim());
   if (!m) throw new Error(`${where}: '${value}' should look like 2026-10-22 15:30`);
@@ -43,6 +31,11 @@ function localDateTime(value: string, where: string): number {
 
 export function loadRota(file: RotaFile): RotaConfig {
   if (!file || !Array.isArray(file.patterns)) throw new Error('rota.json: "patterns" is missing');
+  for (const k of ['A', 'B'] as const) {
+    if (typeof file.names?.[k] !== 'string' || file.names[k].trim() === '') {
+      throw new Error(`rota.json: "names" needs a name for ${k}`);
+    }
+  }
   const patterns = file.patterns.map((p, i) => {
     const nights = String(p.nights ?? '').replace(/[\s-]/g, '').toUpperCase();
     if (!/^[AB]+$/.test(nights)) throw new Error(`rota.json pattern ${i + 1}: "nights" must contain only A and B`);
@@ -84,25 +77,4 @@ export function loadRota(file: RotaFile): RotaConfig {
     throw new Error(`rota.json: ${(e as Error).message}`);
   }
   return cfg;
-}
-
-export function validatePeople(p: unknown): People {
-  const x = p as People;
-  const fail = (msg: string): never => {
-    throw new Error(`People data: ${msg}`);
-  };
-  if (!x || typeof x !== 'object') fail('not valid JSON');
-  if (!Array.isArray(x.children) || x.children.length === 0) fail('"children" should be a list of first names');
-  if (typeof x.school !== 'string') fail('"school" is missing');
-  for (const k of ['A', 'B'] as const) {
-    const par = x.parents?.[k];
-    if (!par) fail(`parent ${k} is missing`);
-    if (typeof par.name !== 'string' || par.name.trim() === '') fail(`parent ${k} "name" is missing`);
-    for (const f of ['phone', 'email'] as const) {
-      if (par[f] !== undefined && (typeof par[f] !== 'string' || par[f].trim() === '')) {
-        fail(`parent ${k} "${f}" should be filled in or left out completely`);
-      }
-    }
-  }
-  return x;
 }

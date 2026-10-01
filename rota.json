@@ -1,4 +1,8 @@
 {
+  "names": {
+    "A": "Doug",
+    "B": "Anna"
+  },
   "schoolStart": "08:45",
   "patterns": [
     {

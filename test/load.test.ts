@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { responsibleAt } from '../src/rota/engine.ts';
-import { loadRota, validatePeople, type RotaFile } from '../src/rota/load.ts';
+import { loadRota, type RotaFile } from '../src/rota/load.ts';
 import { formatLondon, londonToInstant } from '../src/rota/time.ts';
 
 const base: RotaFile = {
+  names: { A: 'Parent A', B: 'Parent B' },
   schoolStart: '08:45',
   patterns: [{ id: 'p', from: '2026-01-05', anchor: '2026-01-05', nights: 'AABBAAA BBAABBB' }],
 };
@@ -24,12 +25,6 @@ describe('rota.json loading', () => {
     assert.equal(formatLondon(r.until), '2026-10-02 08:45');
     assert.equal(r.next, 'B');
     assert.equal(responsibleAt(londonToInstant('2026-09-30', '08:44'), cfg, 'viewer').parent, 'B');
-  });
-
-  it('the committed people.example.json is valid and contains placeholders only', () => {
-    const p = validatePeople(JSON.parse(readFileSync(new URL('../people.example.json', import.meta.url), 'utf8')));
-    assert.match(p.parents.A.phone, /^07700 900/); // Ofcom range reserved for fiction
-    assert.match(p.parents.B.email, /@example\.com$/);
   });
 
   it('reads nights with spaces and hyphens', () => {
@@ -59,16 +54,7 @@ describe('rota.json loading', () => {
     assert.throws(() => loadRota({ ...base, schoolStart: '8.45' }), /Invalid time/);
   });
 
-  it('allows a parent with no phone or email', () => {
-    const p = validatePeople({ children: ['X'], school: 'S', parents: { A: { name: 'a', phone: '1', email: 'e' }, B: { name: 'b' } } });
-    assert.equal(p.parents.B.phone, undefined);
-  });
-
-  it('rejects incomplete people data', () => {
-    assert.throws(() => validatePeople({ children: [], school: 'x', parents: {} }), /children/);
-    assert.throws(
-      () => validatePeople({ children: ['X'], school: 'S', parents: { A: { name: 'a', phone: '1', email: 'e' }, B: { name: 'b', phone: '', email: 'e' } } }),
-      /parent B "phone" should be filled in or left out/,
-    );
+  it('needs a name for each parent', () => {
+    assert.throws(() => loadRota({ ...base, names: { A: 'Parent A', B: '' } }), /name for B/);
   });
 });

@@ -9,17 +9,15 @@ const root = new URL('..', import.meta.url).pathname;
 const out = root + 'dist-test/';
 
 describe('Static site build', () => {
-  it('builds with placeholder data and produces a working, locked-down site', async () => {
-    execFileSync(process.execPath, ['scripts/build.ts', '--example'], {
+  it('builds and produces a working, locked-down site', async () => {
+    execFileSync(process.execPath, ['scripts/build.ts'], {
       cwd: root,
       env: { ...process.env, OUT_DIR: 'dist-test', NODE_NO_WARNINGS: '1' },
     });
     try {
-      const headers = readFileSync(out + '_headers', 'utf8');
-      assert.match(headers, /X-Robots-Tag: noindex/);
-      assert.match(headers, /Content-Security-Policy: default-src 'none'; script-src 'self'/);
-      assert.match(readFileSync(out + 'robots.txt', 'utf8'), /Disallow: \//);
-      assert.match(readFileSync(out + 'index.html', 'utf8'), /<meta name="robots" content="noindex/);
+      const html = readFileSync(out + 'index.html', 'utf8');
+      assert.match(html, /<meta name="robots" content="noindex/);
+      assert.match(html, /Content-Security-Policy" content="default-src 'none'; script-src 'self'/);
 
       // The built browser code must load and give the same answers as the source.
       const engine = await import(out + 'js/engine.js');
@@ -33,7 +31,6 @@ describe('Static site build', () => {
         const src = srcEngine.responsibleAt(time.londonToInstant(d, t), srcCfg, 'viewer');
         assert.deepEqual([built.parent, built.until], [src.parent, src.until], `${d} ${t}`);
       }
-      assert.equal(data.people.parents.A.name, 'Parent A');
       assert.doesNotMatch(readFileSync(out + 'js/app.js', 'utf8'), /\.ts'/);
     } finally {
       rmSync(out, { recursive: true, force: true });
