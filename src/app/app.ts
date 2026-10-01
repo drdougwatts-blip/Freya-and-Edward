@@ -35,19 +35,26 @@ function describe(date: string): string {
   return text;
 }
 
-const input = document.getElementById('date') as HTMLInputElement;
-function renderDate(): void {
-  document.getElementById('answer')!.textContent = input.value ? describe(input.value) : '';
-}
-
-input.value = londonDate(Date.now());
-// Phones differ in which event they send when the calendar closes, so listen
-// for both, and give a button for anyone who expects to press one.
-input.addEventListener('input', renderDate);
-input.addEventListener('change', renderDate);
-document.getElementById('show')!.addEventListener('click', renderDate);
-renderDate();
-
+// Show the name first, so it appears even if the rest fails. Right after a
+// change goes live a phone can briefly mix an old copy of the page with the
+// new script, so the date box code below only touches what exists.
 renderNow();
 setInterval(renderNow, 30_000);
 document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && renderNow());
+
+const input = document.getElementById('date') as HTMLInputElement | null;
+const answer = document.getElementById('answer');
+
+function renderDate(): void {
+  if (input && answer) answer.textContent = input.value ? describe(input.value) : '';
+}
+
+if (input) {
+  input.value = londonDate(Date.now());
+  // Phones differ in which event they send when the calendar closes, so listen
+  // for both, and give a button for anyone who expects to press one.
+  input.addEventListener('input', renderDate);
+  input.addEventListener('change', renderDate);
+  document.getElementById('show')?.addEventListener('click', renderDate);
+  renderDate();
+}
