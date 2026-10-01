@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   baseNightParent,
+  dayTimeline,
   handovers,
   monthView,
   responsibleAt,
@@ -411,5 +412,28 @@ describe('Validation', () => {
     assert.throws(() => config({ patterns: [{ id: 'x', effectiveFrom: ANCHOR, anchor: ANCHOR, cycle: ['A', 'C' as Parent] }] }));
     assert.throws(() => config({ school: { schoolStart: '8:45' } }));
     assert.throws(() => config({ overrides: [override({ start: 10, end: 10, parent: 'A' })] }));
+  });
+});
+
+describe('Single-day timeline (for the date picker)', () => {
+  const cfg = config();
+
+  it('a day with a school-start handover: who at midnight, then the change', () => {
+    // Fri 12 Jun 2026: Thu night B, Fri night A.
+    const d = dayTimeline('2026-06-12', cfg, 'viewer');
+    assert.equal(d.startParent, 'B');
+    assert.deepEqual(d.changes.map((c) => [c.time, c.to]), [['08:45', 'A']]);
+  });
+
+  it('a day with no change', () => {
+    const d = dayTimeline('2026-06-13', cfg, 'viewer');
+    assert.equal(d.startParent, 'A');
+    assert.deepEqual(d.changes, []);
+  });
+
+  it('works on the clock-change days', () => {
+    assert.deepEqual(dayTimeline('2026-03-29', cfg, 'viewer').changes, []);
+    const mon = dayTimeline('2026-03-30', cfg, 'viewer');
+    assert.deepEqual([mon.startParent, mon.changes.map((c) => c.time)], ['B', ['08:45']]);
   });
 });
